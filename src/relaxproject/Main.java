@@ -7,13 +7,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 public class Main {
     public static void main(String[] args) throws Exception {
-        Table table = getFile("src\\organizations-100.csv");
+        Table table = getFile("src\\sample.csv");
         //System.out.println(table.toString());
         ArrayList<String> newCats = new ArrayList<>();
-        newCats.add("Index");
-        newCats.add("Website");
-        Table indexs = table.projection(newCats);
-        System.out.println(indexs.toString());
+        newCats.add("Name");
+        ArrayList<String> newCats2 = new ArrayList<>();
+        newCats2.add("Gender");
+        Table cart1 = table.projection(newCats);
+        Table cart2 = table.projection(newCats2);
+        Table cartprod = cart1.cartesian(cart2);
+        Table age = table.selection("Age",">=","12");
+        System.out.println(age.toString());
+        System.out.println(cartprod.toString());
         //main input loop
         Scanner scanner = new Scanner(System.in);
         String input = "";
