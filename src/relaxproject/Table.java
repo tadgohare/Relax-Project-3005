@@ -230,6 +230,35 @@ public class Table {
         }
         return newTable;
     }
+    /**
+     * Takes the union of two tables (must be compatible)
+     * @param t2 table to take union with
+     * @return newly formed table if successfull, otherwise null.
+     */
+    public Table union(Table t2){
+        if(!getCategories().equals(t2.getCategories())){ return null; }
+        Table newTable = this;
+        for(LinkedHashMap<String, String> row : t2.getTable()){
+            if(!newTable.getTable().contains(row)){
+                newTable.addRow(row);
+            }
+        }
+        return newTable;
+    }
+
+    /**
+     * Takes A - B of two tables (in A but not in B).
+     * @param t2 table to do minus
+     * @return new table if completed, null otherwise
+     */
+    public Table minus(Table t2){
+        if(!getCategories().equals(t2.getCategories())){ return null; }
+        Table newTable = new Table(getCategories());
+        for(LinkedHashMap<String,String> row : getTable()){
+            if(!t2.getTable().contains(row)){ newTable.addRow(row); }
+        }
+        return newTable;
+    }
 
     public String toString(){
         String output = getName() + "\n";

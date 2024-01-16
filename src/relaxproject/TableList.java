@@ -1,6 +1,8 @@
 package relaxproject;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 /**
@@ -106,13 +108,19 @@ public class TableList {
         } else { return false; }
     }
 
-
+    /**
+     * Runs a query or multiple queries on the specified table
+     * @param query the query/queries that you want to run
+     * @param name name of the table to run a query on
+     * @return a new table made from the query/queries, if something fails, then null is returned
+     */
     public Table getQuery(String query, String name){
         Table table = getByName(name);
         if(table == null){
             System.out.println("TableList ERROR: TABLE DOES NOT EXIST");
         }
         String[] qElets = query.split(" ");
+        if(qElets.length <= 1){ return null; }
         for(int i = qElets.length-2; i >= 0; i-=2){
             switch(qElets[i]){
                 case "pi":
@@ -136,10 +144,19 @@ public class TableList {
                     Table toIntersect = getByName(qElets[i+1]);
                     table = table.intersect(toIntersect);
                     break;
+                case "union":
+                    Table toUnion = getByName(qElets[i+1]);
+                    table = table.union(toUnion);
+                    break;
+                case "minus":
+                    Table toMinus = getByName(qElets[i+1]);
+                    table = table.minus(toMinus);
+                    break;
                 default:
                     return null;
             }
         }
+        if(table != null){ table.setName("new_table_"+(id++)); }
         return table;
     }
 
@@ -155,13 +172,16 @@ public class TableList {
         output+="cart <table name to merge> - takes the cartesian product of the two tables\n";
         output+="natjoin <table name to join> - does a natural join operation on the tables\n";
         output+="intersect <table to intersect> - does the intersect operator on two tables\n";
+        output+="union <table to union> - does the union operator on two tables\n";
+        output+="minus <table to complement> does the set minus operator on the two tables (in A but not in B)\n";
 
-        output+="Other commands (will not be able to combine with relational algebra commands)\n";
+        output+="\n\nOther commands (will not be able to combine with relational algebra commands)\n";
         output+="add <filepath> <name> - loads a table in from a .csv file\n";
         output+="table <table name> - switches table to be selected\n";
         output+="list - lists all the names of the tables\n";
         output+="display <tableName> - prints out the specified table to the console, if none specified, prints the selected table.\n";
         output+="set-name <new name> - sets a new name of the table currently selected\n";
+        output+="export - exports the currently selected table to a csv saved as '<table name>.csv'. WARNING: this will overwrite a file with the same name\n";
         output+="exit - ends the program lifecycle\n";
 
         return output;
@@ -189,5 +209,39 @@ public class TableList {
             System.out.println("ERROR: FAILED TO READ FILE");
             return false;
         }
+    }
+
+    /**
+     * Exports a table to a csv file
+     * @param name name of table in TableList
+     * @return whether operation was successfully completed.
+     */
+    public boolean exportTable(String name){
+        try {
+            Table toSave = getByName(name);
+            if(toSave == null){ return false; }
+            String filepath = "src\\"+name+".csv";
+            FileWriter file = new FileWriter(filepath);
+            BufferedWriter output = new BufferedWriter(file);
+            String data = toSave.toString().split("\\n",2)[1];
+            output.write(data);
+            output.flush();
+            output.close();
+            return true;
+        }
+        catch(Exception e){
+            System.out.println("SOMETHING WENT WRONG SAVING THE FILE");
+            return false;
+        }
+    }
+
+    /**
+     * adds a table to the collection from a .csv file with a generated name
+     * @param filepath path to .csv file
+     * @return whether the operation was successfull or not
+     */
+    public boolean addTableFromFile(String filepath){
+        String name = "new_table_"+id++;
+        return addTableFromFile(filepath,name);
     }
 }

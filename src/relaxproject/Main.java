@@ -45,9 +45,23 @@ public class Main {
                     selected = newName;
                 }
             }
+            else if(input.equals("export")){
+                System.out.print("Are you sure you want to export "+selected+" to a csv file? (this will overwrite) (y/n) > ");
+                input = scanner.nextLine();
+                if(input.equalsIgnoreCase("y")){
+                    boolean exported = tl.exportTable(selected);
+                    System.out.println("Saved to file = "+exported);
+                } else{ System.out.println("Aborted, no file has been saved");}
+            }
             else {
                 Table t2 = tl.getQuery(input, selected);
-                System.out.println(t2);
+                if(t2 == null){
+                    System.out.println("ERROR: something went wrong in the query, please check your query and try again");
+                } else {
+                    System.out.println("Table "+t2.getName()+" successfully created, switch to this table using the 'table' commmand. Now outputting the new table: ");
+                    System.out.println(t2);
+                    tl.addTable(t2);
+                }
             }
         }
         scanner.close();
