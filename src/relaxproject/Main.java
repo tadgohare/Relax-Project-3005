@@ -1,44 +1,57 @@
 package relaxproject;
 import java.util.Scanner;
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 public class Main {
+
     public static void main(String[] args) throws Exception {
-        Table table = getFile("src\\sample.csv");
-        //System.out.println(table.toString());
-        ArrayList<String> newCats = new ArrayList<>();
-        newCats.add("Name");
-        ArrayList<String> newCats2 = new ArrayList<>();
-        newCats2.add("Gender");
-        Table cart1 = table.projection(newCats);
-        Table cart2 = table.projection(newCats2);
-        Table cartprod = cart1.cartesian(cart2);
-        Table age = table.selection("Age",">=","12");
-        System.out.println(age.toString());
-        System.out.println(cartprod.toString());
+        //testing stuff but keep tablelist
+        TableList tl = new TableList();
+        tl.addTableFromFile("src\\sample.csv","students1");
+        tl.addTableFromFile("src\\sample2.csv","students2");
+        tl.addTableFromFile("src\\sample3.csv","students3");
+
+
         //main input loop
+        String selected = "students1";
         Scanner scanner = new Scanner(System.in);
         String input = "";
-        while(!input.equalsIgnoreCase("exit")){
-            System.out.print("> ");
-            input = scanner.next();
-            System.out.println("you entered: "+ input);
+        while(true){
+            System.out.print(selected+"> ");
+            input = scanner.nextLine();
+            if(input.equalsIgnoreCase("exit")){ break; }
+            //add a table from file
+            else if(input.startsWith("add")){
+                String[] brokenLine = input.split(" ");
+                tl.addTableFromFile(brokenLine[1], brokenLine[2]);
+            } 
+            else if(input.equals("help")){
+                System.out.println(tl.getHelp());
+            }
+            else if(input.equals("list")){
+                System.out.println(tl.listNames());
+            }
+            else if(input.equals("display")){
+                System.out.println(tl.getByName(selected));
+            }
+            else if(input.startsWith("display")){
+                System.out.println(tl.getByName(input.split(" ")[1]));
+            }
+            else if(input.startsWith("table")){
+                String toSelect = input.split(" ")[1];
+                if(tl.hasTable(toSelect)){ selected = toSelect; }
+            }
+            else if(input.startsWith("set-name")){
+                String newName = input.split(" ")[1];
+                if(tl.changeName(selected, newName)){
+                    selected = newName;
+                }
+            }
+            else {
+                Table t2 = tl.getQuery(input, selected);
+                System.out.println(t2);
+            }
         }
         scanner.close();
     }
 
-    private static Table getFile(String filepath) throws IOException{
-        BufferedReader r = new BufferedReader(new FileReader(filepath));
-        String line = r.readLine();
-        String[] categories = line.split(",");
-        Table table = new Table(new ArrayList<>(Arrays.asList(categories)));
-        while((line = r.readLine()) != null){
-            table.addRow(line.split(","));
-        }
-        r.close();
-        return table;
-    }
+    
 }
