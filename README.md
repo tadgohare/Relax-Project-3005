@@ -1,18 +1,10 @@
-## Getting Started
+# Relax Project COMP 3005
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Created by Tadg O'Hare
+This DBMS reads and writes to csv files (tables) and does various relational algebra queries on them
 
-## Folder Structure
+## Instructions
 
-The workspace contains two folders by default, where:
-
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
-
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
-
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
-
-## Dependency Management
-
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+1. Get a CSV file to do operations on
+2. Run the code and use help for a list of commands
+3. After doing any necessary operations, remember to save your new table(s)

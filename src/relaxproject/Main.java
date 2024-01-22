@@ -5,13 +5,13 @@ public class Main {
     public static void main(String[] args) throws Exception {
         //testing stuff but keep tablelist
         TableList tl = new TableList();
-        tl.addTableFromFile("src\\sample.csv","students1");
-        tl.addTableFromFile("src\\sample2.csv","students2");
-        tl.addTableFromFile("src\\sample3.csv","students3");
-
+        // tl.addTableFromFile("src\\sample.csv","students1");
+        // tl.addTableFromFile("src\\sample2.csv","students2");
+        // tl.addTableFromFile("src\\sample3.csv","students3");
+        System.out.println("Welcome to Relax Project 3005, designed by Tadg O'Hare, please type help for a list of commands.");
 
         //main input loop
-        String selected = "students1";
+        String selected = "";
         Scanner scanner = new Scanner(System.in);
         String input = "";
         while(true){
